@@ -22,6 +22,5 @@ public class Course {
     @Column(nullable=false)
     private int difficulty = 1;
 
-    // if not null, overrides difficulty-based points
     private Integer points;
 }

@@ -19,26 +19,17 @@ public class ProgressController {
 
     private final ProgressService progressService;
 
-    // ----------------------------
-    // 1) Atualizar progresso
-    // ----------------------------
     @PostMapping
     public ResponseEntity<CompletionResultDTO> update(@Valid @RequestBody ProgressDTO dto) {
         var result = progressService.updateProgress(dto);
         return ResponseEntity.ok(result);
     }
 
-    // ----------------------------
-    // 2) Buscar progresso de todos os cursos do usuário
-    // ----------------------------
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<UserCourseProgress>> getProgressByUser(@PathVariable Long userId) {
         return ResponseEntity.ok(progressService.getProgressByUser(userId));
     }
 
-    // ----------------------------
-    // 3) Buscar progresso de um curso específico
-    // ----------------------------
     @GetMapping("/user/{userId}/course/{courseId}")
     public ResponseEntity<UserCourseProgress> getProgressByCourse(
             @PathVariable Long userId,
@@ -47,9 +38,6 @@ public class ProgressController {
         return ResponseEntity.ok(progressService.getProgressByCourse(userId, courseId));
     }
 
-    // ----------------------------
-    // 4) (Opcional) Buscar todos os registros
-    // ----------------------------
     @GetMapping
     public ResponseEntity<List<UserCourseProgress>> listAll() {
         return ResponseEntity.ok(progressService.listAll());

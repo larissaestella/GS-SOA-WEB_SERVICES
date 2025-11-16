@@ -31,6 +31,6 @@ public class GamificationService {
         for (var e : thresholds.entrySet()) {
             if (points < e.getValue()) return e.getValue() - points;
         }
-        return 0; // top level
+        return 0;
     }
 }

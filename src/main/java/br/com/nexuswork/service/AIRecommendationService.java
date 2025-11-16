@@ -59,10 +59,6 @@ public class AIRecommendationService {
     }
 
 
-    // ------------------------------
-    // PÚBLICO
-    // ------------------------------
-
     public String askQuestionAboutCourse(Long userId, Long courseId, String question, String courseContext) {
         List<String> parts = List.of(
                 "Contexto do curso: " + (courseContext == null ? "" : courseContext),
@@ -90,10 +86,7 @@ public class AIRecommendationService {
         ));
     }
 
-
-    // ------------------------------
     // CORE: CHAMADA PARA OPENAI
-    // ------------------------------
 
     private String askOpenAI(List<String> promptParts) {
 
@@ -146,7 +139,6 @@ public class AIRecommendationService {
             }
             catch (WebClientResponseException e) {
 
-                // ************ ERRO REAL **************
                 return "Erro da OpenAI: " + e.getStatusCode() +
                         " - " + e.getResponseBodyAsString();
             }

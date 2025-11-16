@@ -25,10 +25,6 @@ public class ProgressService {
     private final CourseRepository courseRepo;
     private final GamificationService gamificationService;
 
-
-    // ============================================================
-    // 1) UPDATE PROGRESS — seu método original (mantido 100%)
-    // ============================================================
     @Transactional
     public CompletionResultDTO updateProgress(ProgressDTO dto) {
 
@@ -40,7 +36,6 @@ public class ProgressService {
 
         var existing = progressRepo.findByUserIdAndCourseId(dto.userId(), dto.courseId());
 
-        // --- CASO 1: progresso ainda não existe (primeira vez)
         if (existing.isEmpty()) {
 
             UserCourseProgress p = UserCourseProgress.builder()
@@ -54,7 +49,6 @@ public class ProgressService {
 
             progressRepo.save(p);
 
-            // SE o curso foi concluído, aplica gamificação
             if (p.isCompleted()) {
                 return handleCompletion(user, course, "Curso concluído");
             }
@@ -66,14 +60,12 @@ public class ProgressService {
             );
         }
 
-        // --- CASO 2: progresso existe
         UserCourseProgress p = existing.get();
         boolean wasCompletedBefore = p.isCompleted();
 
         p.setProgress(dto.progress());
         p.setUpdatedAt(LocalDateTime.now());
 
-        // SE agora concluiu pela primeira vez
         if (dto.progress() >= 100.0 && !wasCompletedBefore) {
             p.setCompleted(true);
             p.setCompletedAt(LocalDateTime.now());
@@ -92,9 +84,6 @@ public class ProgressService {
     }
 
 
-    // ============================================================
-    // MÉTODO AUXILIAR — aplicar pontos + calcular nível
-    // ============================================================
     private CompletionResultDTO handleCompletion(User user, Course course, String message) {
 
         int pointsGained = (course.getPoints() != null && course.getPoints() > 0)
@@ -120,26 +109,14 @@ public class ProgressService {
         );
     }
 
-
-    // ============================================================
-    // 2) LISTAR TODOS OS PROGRESSOS
-    // ============================================================
     public List<UserCourseProgress> listAll() {
         return progressRepo.findAll();
     }
 
-
-    // ============================================================
-    // 3) LISTAR TODOS OS CURSOS E PROGRESSOS DO USUÁRIO
-    // ============================================================
     public List<UserCourseProgress> getProgressByUser(Long userId) {
         return progressRepo.findByUserId(userId);
     }
 
-
-    // ============================================================
-    // 4) BUSCAR PROGRESSO DO USUÁRIO EM UM CURSO ESPECÍFICO
-    // ============================================================
     public UserCourseProgress getProgressByCourse(Long userId, Long courseId) {
         return progressRepo.findByUserIdAndCourseId(userId, courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Progresso não encontrado"));
